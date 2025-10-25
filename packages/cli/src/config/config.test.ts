@@ -500,6 +500,7 @@ describe('loadCliConfig', () => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
     vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    delete process.env.GEMINI_MODEL;
   });
 
   afterEach(() => {

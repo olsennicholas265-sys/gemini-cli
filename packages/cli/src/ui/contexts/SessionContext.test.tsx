@@ -4,12 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/** @vitest-environment jsdom */
-
 import { type MutableRefObject } from 'react';
 import { render } from 'ink-testing-library';
-import { renderHook } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+import * as ReactTestRenderer from 'react-test-renderer';
+import { act } from 'react';
 import type { SessionMetrics } from './SessionContext.js';
 import { SessionStatsProvider, useSessionStats } from './SessionContext.js';
 import { describe, it, expect, vi } from 'vitest';
@@ -212,9 +210,12 @@ describe('SessionStatsContext', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     try {
-      // Expect renderHook itself to throw when the hook is used outside a provider
       expect(() => {
-        renderHook(() => useSessionStats());
+        act(() => {
+          ReactTestRenderer.create(
+            <TestHarness contextRef={{ current: undefined }} />,
+          );
+        });
       }).toThrow('useSessionStats must be used within a SessionStatsProvider');
     } finally {
       consoleSpy.mockRestore();
